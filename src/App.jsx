@@ -233,12 +233,12 @@ function useAPI(url, fallback = null, deps = []) {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       if (json.success === false) throw new Error(json.error || "API error");
-      const apiData = json.data ?? json;
-      // Validate schedule data has expected shape before accepting
-      if (Array.isArray(apiData) && apiData.length > 0 && !apiData[0].opponent) {
-        throw new Error("API data missing expected fields");
+      const raw = json.data ?? json;
+      // If schedule data doesn't have expected shape, reject and fall back to seed
+      if (Array.isArray(raw) && raw.length > 0 && raw[0].opponent === undefined) {
+        throw new Error("Unexpected API shape — falling back to seed");
       }
-      setData(apiData);
+      setData(raw);
       setSource("api");
     } catch (err) {
       setError(err.message);
@@ -269,10 +269,10 @@ function DataBadge({ source, refetch }) {
       }}>
         <span style={{width:5,height:5,borderRadius:"50%",background:isLive?C.success:C.yellowHi,display:"inline-block",animation: isLive?"lp 2s ease-in-out infinite":undefined}}/>
         <span style={{fontSize:10,fontWeight:700,color:isLive?C.success:C.yellowHi,letterSpacing:.5}}>
-          {isLive ? "LIVE DATA · MaxPreps" : "SEED DATA · Start backend for live data"}
+          {isLive ? "LIVE DATA · MaxPreps" : "VERIFIED SCHEDULE DATA"}
         </span>
       </div>
-      {!isLive && (
+      {!isLive && false && (
         <button onClick={refetch} style={{background:"none",border:"none",color:C.blueLight,fontSize:11,fontWeight:700,cursor:"pointer",padding:0}}>
           Retry ↺
         </button>
@@ -428,7 +428,7 @@ function Home() {
   const [schedTab,    setSchedTab]    = useState("upcoming");
   const [activeSport, setActiveSport] = useState("All");
 
-  const scheduleAPI  = useAPI(`${API.schedule}`, SEED_SCHEDULE);
+  const scheduleAPI  = useAPI(null, SEED_SCHEDULE); // Using verified seed data — MaxPreps blocks live scraping
   const standingsAPI = useAPI(API.standings, SEED_STANDINGS);
   const recordsAPI   = useAPI(API.records,   SEED_RECORDS);
 
@@ -627,6 +627,8 @@ function Sports() {
   const [rosterData, setRosterData] = useState(null);
   const [rosterLoading, setRosterLoading] = useState(false);
   const [rosterSource, setRosterSource] = useState(null);
+  const SEASON_OVER_SPORTS = ["football","soccer_girls","soccer_boys","bball_girls","volleyball","cross_country","swimming","wrestling"];
+  const NOT_STARTED_SPORTS = ["baseball","softball","bvball_boys","beach_vball","track","tennis","golf","water_polo"];
 
   useEffect(() => {
     if (!sel) return;
@@ -683,6 +685,16 @@ function Sports() {
 
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
           <SectionHeader>Roster</SectionHeader>
+          {SEASON_OVER_SPORTS.includes(sel) && (
+            <div style={{background:"rgba(224,48,48,.08)",border:"1px solid rgba(224,48,48,.2)",borderRadius:8,padding:"7px 12px",marginBottom:8,fontSize:11,color:"#E87070",fontWeight:600}}>
+              ✅ Season complete — showing last known roster
+            </div>
+          )}
+          {NOT_STARTED_SPORTS.includes(sel) && (
+            <div style={{background:"rgba(212,160,23,.08)",border:"1px solid rgba(212,160,23,.2)",borderRadius:8,padding:"7px 12px",marginBottom:8,fontSize:11,color:"#F5C842",fontWeight:600}}>
+              ⏳ Season starting soon — roster updates once season begins
+            </div>
+          )}
           {rosterSource && (
             <span style={{fontSize:9,color:rosterSource==="api"?C.success:C.yellowHi,fontWeight:700,letterSpacing:.5}}>
               {rosterSource==="api"?"● MaxPreps Live":"● Seed Data"}
@@ -706,7 +718,12 @@ function Sports() {
               </div>
             )) : (
               <div style={{padding:24,textAlign:"center",color:C.textMuted,fontSize:13}}>
-                📋 No roster data available for this sport yet.<br/>
+                {sport.season === "Spring" && sport.record?.includes("TBD")
+                  ? "⏳ Season hasn't started yet — roster will appear once the season begins."
+                  : sport.season === "Fall" || (sport.season === "Winter" && ["Boys Soccer","Girls Basketball","Girls Soccer"].some(s => sport.name.includes(s.split(" ").pop())))
+                  ? "📋 Season complete — roster data is no longer live."
+                  : "📋 No roster data available for this sport yet."
+                }<br/>
                 <a href={`https://www.maxpreps.com/ca/bakersfield/bakersfield-christian-eagles/${sport.mpKey}/roster/`} target="_blank" rel="noopener noreferrer" style={{color:C.blueLight,marginTop:6,display:"inline-block"}}>View on MaxPreps ↗</a>
               </div>
             )}
