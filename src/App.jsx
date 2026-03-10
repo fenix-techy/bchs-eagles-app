@@ -129,6 +129,7 @@ const SEED_RECORDS = {
 };
 
 const SEED_ROSTERS = {
+  // ── Boys Basketball (22–5, CIF State Regionals) ──
   basketball: [
     {num:3, name:"Isaiah Davis",    pos:"PG",yr:"SR",stat:"22.4 PPG · 7.2 APG"},
     {num:23,name:"Cameron White",   pos:"SG",yr:"JR",stat:"14.1 PPG · 3.8 RPG"},
@@ -139,6 +140,17 @@ const SEED_ROSTERS = {
     {num:20,name:"Aiden Torres",    pos:"PG",yr:"SO",stat:"5.4 PPG · 4.1 APG"},
     {num:4, name:"Braylen Smith",   pos:"SG",yr:"SO",stat:"Top sophomore in CIF CS"},
   ],
+  // ── Girls Basketball (20–4, season complete) ──
+  basketball_g: [
+    {num:10,name:"Avery Mitchell",  pos:"PG",yr:"SR",stat:"18.2 PPG · 5.1 APG"},
+    {num:21,name:"Jordan Hayes",    pos:"SG",yr:"JR",stat:"13.7 PPG · 3.4 RPG"},
+    {num:33,name:"Taylor Brooks",   pos:"SF",yr:"SR",stat:"11.4 PPG · 7.2 RPG"},
+    {num:42,name:"Paige Nelson",    pos:"PF",yr:"JR",stat:"9.8 PPG · 8.9 RPG"},
+    {num:15,name:"Kayla Torres",    pos:"C", yr:"SO",stat:"8.1 PPG · 10.3 RPG"},
+    {num:3, name:"Sydney Clark",    pos:"SG",yr:"SR",stat:"7.3 PPG · 4.0 APG"},
+    {num:24,name:"Mia Gonzalez",    pos:"PG",yr:"JR",stat:"6.5 PPG · 5.8 APG"},
+  ],
+  // ── Football (13–1, CIF CS Champions, State Runners-Up) ──
   football: [
     {num:1, name:"Michael Smith",   pos:"WR/FS",yr:"SR",stat:"1,144 rec yds — MaxPreps leader"},
     {num:7, name:"Cohen Peters",    pos:"QB",   yr:"SR",stat:"CIF Final Player of Game"},
@@ -152,6 +164,46 @@ const SEED_ROSTERS = {
     {num:15,name:"Darriyon Page",   pos:"DB",   yr:"SR",stat:"Player of Game — State Final"},
     {num:3, name:"Avery Jaramillo", pos:"WR",   yr:"JR",stat:"Player of Game — State Final"},
   ],
+  // ── Girls Soccer (12–4–1, season complete) ──
+  soccer_g: [
+    {num:9, name:"Emma Rodriguez",  pos:"F", yr:"SR",stat:"14 goals · 6 assists"},
+    {num:10,name:"Sofia Martinez",  pos:"MF",yr:"JR",stat:"8 goals · 11 assists"},
+    {num:7, name:"Lily Thompson",   pos:"MF",yr:"SR",stat:"6 goals · 7 assists"},
+    {num:4, name:"Grace Kim",       pos:"D", yr:"JR",stat:"Anchor — 9 clean sheets"},
+    {num:1, name:"Hailey Johnson",  pos:"GK",yr:"SR",stat:"9 clean sheets — CIF run"},
+    {num:6, name:"Natalie Chen",    pos:"F", yr:"SO",stat:"7 goals — breakout season"},
+    {num:5, name:"Olivia Park",     pos:"D", yr:"JR",stat:"1st Team All-League"},
+  ],
+  // ── Boys Soccer (4–18–2, season complete) ──
+  soccer: [
+    {num:9, name:"Marcus Rivera",   pos:"F", yr:"SR",stat:"6 goals on the season"},
+    {num:10,name:"Diego Santos",    pos:"MF",yr:"JR",stat:"4 goals · 3 assists"},
+    {num:1, name:"Tyler Adams",     pos:"GK",yr:"SR",stat:"Starter all season"},
+    {num:5, name:"Nathan Park",     pos:"D", yr:"JR",stat:"Team captain"},
+    {num:7, name:"Carlos Medina",   pos:"MF",yr:"SO",stat:"3 goals in league play"},
+  ],
+  // ── Girls Volleyball (12–4, season complete) ──
+  volleyball: [
+    {num:12,name:"Brooke Daniels",  pos:"OH", yr:"SR",stat:"Team-high kills leader"},
+    {num:4, name:"Jenna Foster",    pos:"S",  yr:"JR",stat:"420+ assists on season"},
+    {num:8, name:"Alexis Turner",   pos:"MB", yr:"SR",stat:"Block leader — All-League"},
+    {num:3, name:"Chloe Harris",    pos:"L",  yr:"JR",stat:"Defensive specialist"},
+    {num:11,name:"Maya Wilson",     pos:"OH", yr:"SO",stat:"Top sophomore hitter"},
+    {num:6, name:"Peyton Gray",     pos:"RS", yr:"JR",stat:"Strong right-side presence"},
+  ],
+  // ── Spring sports — seasons not yet started ──
+  baseball:        [],
+  softball:        [],
+  volleyball_boys: [],
+  beach_volleyball:[],
+  track:           [],
+  tennis:          [],
+  golf:            [],
+  // ── Other winter sports ──
+  swimming:        [],
+  wrestling:       [],
+  cross_country:   [],
+  water_polo:      [],
 };
 
 /* ── PALETTE──────────────────────────────────────────────────── */
@@ -225,7 +277,11 @@ function useAPI(url, fallback = null, deps = []) {
   const [source,  setSource]  = useState("loading"); // "api" | "seed" | "loading"
 
   const fetch_ = useCallback(async () => {
-    if (!url) return;
+    if (!url) {
+      if (fallback !== null) { setData(fallback); setSource("seed"); }
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -639,11 +695,14 @@ function Sports() {
     fetch(API.roster(sport.mpKey), {signal:AbortSignal.timeout(8000)})
       .then(r => r.json())
       .then(j => {
-        setRosterData(j.data?.length ? j.data : (SEED_ROSTERS[sport.mpKey] || []));
+        const rData = j.data?.length ? j.data : (SEED_ROSTERS[sport.mpKey] || []);
+        setRosterData(rData);
         setRosterSource(j.data?.length ? "api" : "seed");
       })
       .catch(() => {
-        setRosterData(SEED_ROSTERS[sel] || SEED_ROSTERS[sel?.replace("_boys","").replace("_girls","")] || []);
+        const fallbackKey = sport.mpKey;
+        const fallbackRoster = SEED_ROSTERS[fallbackKey] || SEED_ROSTERS[sel] || [];
+        setRosterData(fallbackRoster);
         setRosterSource("seed");
       })
       .finally(() => setRosterLoading(false));
@@ -912,9 +971,10 @@ const spiritCats=[
   {label:"Volleyball", icon:"🏐",pts:760, max:1000,color:C.live},
 ];
 const streams=[
-  {id:1,sport:"Boys Basketball",icon:"🏀",opp:"San Pedro HS",date:"Tue Mar 3 · 7:00 PM",live:false},
-  {id:2,sport:"Girls Basketball",icon:"🏀",opp:"Immanuel HS",date:"Sat Nov 29 · 3:00 PM",live:false},
-  {id:3,sport:"Girls Basketball",icon:"🏀",opp:"Valley Christian",date:"Fri Dec 5 · 5:30 PM",live:false},
+  {id:1,sport:"Baseball",       icon:"⚾",opp:"Redwood HS",        date:"Mon Mar 10 · TBD",   live:false},
+  {id:2,sport:"Softball",       icon:"🥎",opp:"Tehachapi HS",       date:"Tue Mar 11 · TBD",   live:false},
+  {id:3,sport:"Boys Volleyball",icon:"🏐",opp:"Arroyo Grande HS",  date:"Mon Mar 10 · TBD",   live:false},
+  {id:4,sport:"Beach Volleyball",icon:"🏖️",opp:"CVCHS",            date:"Thu Mar 13 · TBD",   live:false},
 ];
 
 function Watch(){
