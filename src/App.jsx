@@ -233,7 +233,12 @@ function useAPI(url, fallback = null, deps = []) {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       if (json.success === false) throw new Error(json.error || "API error");
-      setData(json.data ?? json);
+      const apiData = json.data ?? json;
+      // Validate schedule data has expected shape before accepting
+      if (Array.isArray(apiData) && apiData.length > 0 && !apiData[0].opponent) {
+        throw new Error("API data missing expected fields");
+      }
+      setData(apiData);
       setSource("api");
     } catch (err) {
       setError(err.message);
