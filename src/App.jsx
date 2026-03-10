@@ -812,6 +812,40 @@ function Home() {
         )}
         <div style={{color:C.textMuted,fontSize:10,textAlign:"center",marginTop:6}}>Boys Basketball · South Yosemite League · via MaxPreps</div>
       </FadeUp>
+
+      {/* PLAYER OF THE WEEK */}
+      <FadeUp delay={130}>
+        <SectionHeader>⭐ Player of the Week</SectionHeader>
+        <div style={{background:"linear-gradient(145deg,#07090F,#0B1535)",border:"1px solid rgba(91,155,255,.18)",borderRadius:18,overflow:"hidden",position:"relative"}}>
+          <div style={{height:3,background:"linear-gradient(90deg,#D4A017,#F5C842,#D4A017)",backgroundSize:"200% 100%",animation:"gradPan 3s ease infinite"}}/>
+          <div style={{padding:"18px 16px"}}>
+            <div style={{display:"flex",gap:14,alignItems:"center"}}>
+              <div style={{width:62,height:62,borderRadius:"50%",background:"linear-gradient(135deg,rgba(27,79,216,.4),rgba(91,155,255,.2))",border:"2px solid rgba(91,155,255,.3)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,flexShrink:0}}>🦅</div>
+              <div style={{flex:1}}>
+                <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:3}}>
+                  <span style={{background:"linear-gradient(90deg,#D4A017,#F5C842)",borderRadius:5,padding:"2px 8px",fontSize:9,fontWeight:800,color:"#000",letterSpacing:.8}}>POTW</span>
+                  <span style={{fontSize:10,color:C.textMuted,fontWeight:600}}>Week of Mar 9</span>
+                </div>
+                <div style={{fontWeight:800,fontSize:18,color:C.white,letterSpacing:.2}}>Owen Yurosek</div>
+                <div style={{fontSize:12,color:C.blueLight,fontWeight:600,marginTop:1}}>TE / SF · Junior · #88</div>
+              </div>
+            </div>
+            <div style={{marginTop:14,display:"flex",gap:8}}>
+              {[["SF","POS"],["JR","YEAR"],["#88","NUM"]].map(([v,l])=>(
+                <div key={l} className="glass" style={{flex:1,borderRadius:10,padding:"9px 4px",textAlign:"center"}}>
+                  <div className="condensed" style={{fontWeight:900,fontSize:18,color:C.yellowHi}}>{v}</div>
+                  <div style={{fontSize:8,color:C.textMuted,fontWeight:700,letterSpacing:.8,marginTop:2}}>{l}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{marginTop:12,padding:"10px 12px",background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.06)",borderRadius:10}}>
+              <div style={{fontSize:12,color:C.textMid,lineHeight:1.6}}>
+                Two-sport star following in big brother Ben's footsteps. Caught a TD in the State Final run and has been a key contributor all season. A true Eagles leader heading into the CIF Playoff vs Palisades.
+              </div>
+            </div>
+          </div>
+        </div>
+      </FadeUp>
     </div>
   );
 }
