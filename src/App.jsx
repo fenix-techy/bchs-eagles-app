@@ -38,9 +38,9 @@ const SEED_SCHEDULE = [
   {sport:"Boys Basketball",icon:"🏀",opponent:"St. Joseph HS",        oppAbbr:"STJ",date:"Thu Feb 20",isHome:false,result:"L 57–67",bcScore:57,oppScore:67,level:"V",tag:"CIF CS SF"},
   // CIF State SoCal Regional Div II — #3 seed
   {sport:"Boys Basketball",icon:"🏀",opponent:"San Pedro HS",         oppAbbr:"SPD",date:"Mon Mar 3", isHome:true, result:"W 51–44",bcScore:51,oppScore:44,level:"V",tag:"State R1"},
-  {sport:"Boys Basketball",icon:"🏀",opponent:"St. Bernard HS",       oppAbbr:"STB",date:"Thu Mar 5", isHome:true, result:null,   bcScore:null,oppScore:null,level:"V",tag:"State QF",time:"7:00 PM"},
-  {sport:"Boys Basketball",icon:"🏀",opponent:"Palisades HS",         oppAbbr:"PAL",date:"Sat Mar 7", isHome:true, result:null,   bcScore:null,oppScore:null,level:"V",tag:"State SF",time:"7:00 PM"},
-  {sport:"Boys Basketball",icon:"🏀",opponent:"CIF State Final TBD",  oppAbbr:"TBD",date:"Tue Mar 10",isHome:false,result:null,   bcScore:null,oppScore:null,level:"V",tag:"State Final",time:"TBD"},
+  {sport:"Boys Basketball",icon:"🏀",opponent:"State QF TBD",         oppAbbr:"TBD",date:"Thu Mar 5", isHome:true, result:null,   bcScore:null,oppScore:null,level:"V",tag:"State QF",time:"7:00 PM"},
+  {sport:"Boys Basketball",icon:"🏀",opponent:"State SF TBD",         oppAbbr:"TBD",date:"Sat Mar 7", isHome:true, result:null,   bcScore:null,oppScore:null,level:"V",tag:"State SF",time:"7:00 PM"},
+  {sport:"Boys Basketball",icon:"🏀",opponent:"Palisades HS",         oppAbbr:"PAL",date:"Tue Mar 10",isHome:false,result:null,   bcScore:null,oppScore:null,level:"V",tag:"State Final",time:"TBD"},
 
   // ── GIRLS BASKETBALL 2025-26 ──────────────────────────────────────────────
   {sport:"Girls Basketball",icon:"🏀",opponent:"Clovis West",          oppAbbr:"CLW",date:"Tue Nov 18",isHome:false,result:"L 18–67",bcScore:18,oppScore:67,level:"V"},
